@@ -9,6 +9,7 @@ import {
 } from "@material-ui/icons";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -71,7 +72,6 @@ const Right = styled.div`
   flex: 1;
   padding: 20px;
   ${mobile({ backgroundColor: "#fff8f8" })}
-
 `;
 
 const ContactItem = styled.div`
@@ -81,30 +81,42 @@ const ContactItem = styled.div`
 `;
 
 const Payment = styled.img`
-    width: 50%;
+  width: 50%;
 `;
 
 const Footer = () => {
+  const handleSocial = (type) => {
+    if (type === "fb") {
+      window.open("https://www.facebook.com/SaJsTyl/", "_blank");
+    } else if (type === "in") {
+      window.open("https://www.instagram.com/surajax/", "_blank");
+    } else {
+      window.open("https://twitter.com/SaJsTyLeS", "_blank");
+    }
+  };
+
+  const clearCart = () => {};
+
   return (
     <Container>
       <Left>
-        <Logo>LAMA.</Logo>
+        <Logo>LABEL S.</Logo>
         <Desc>
           There are many variations of passages of Lorem Ipsum available, but
           the majority have suffered alteration in some form, by injected
           humour, or randomised words which don’t look even slightly believable.
         </Desc>
         <SocialContainer>
-          <SocialIcon color="3B5999">
+          <SocialIcon onClick={() => handleSocial("fb")} color="3B5999">
             <Facebook />
           </SocialIcon>
-          <SocialIcon color="E4405F">
+          <SocialIcon onClick={() => handleSocial("in")} color="E4405F">
             <Instagram />
           </SocialIcon>
-          <SocialIcon color="55ACEE">
+          <SocialIcon onClick={() => handleSocial("tw")} color="55ACEE">
             <Twitter />
           </SocialIcon>
-          <SocialIcon color="E60023">
+          <SocialIcon onClick={clearCart} color="E60023">
             <Pinterest />
           </SocialIcon>
         </SocialContainer>
@@ -112,8 +124,16 @@ const Footer = () => {
       <Center>
         <Title>Useful Links</Title>
         <List>
-          <ListItem>Home</ListItem>
-          <ListItem>Cart</ListItem>
+          <ListItem>
+            <Link style={{ textDecoration: "none" }} to="/">
+              Home
+            </Link>
+          </ListItem>
+          <ListItem>
+            <Link style={{ textDecoration: "none" }} to="/cart">
+              Cart
+            </Link>
+          </ListItem>
           <ListItem>Man Fashion</ListItem>
           <ListItem>Woman Fashion</ListItem>
           <ListItem>Accessories</ListItem>
@@ -127,13 +147,14 @@ const Footer = () => {
       <Right>
         <Title>Contact</Title>
         <ContactItem>
-          <Room style={{marginRight:"10px"}}/> 622 Dixie Path , South Tobinchester 98336
+          <Room style={{ marginRight: "10px" }} /> Chandigarh, Punjab , India
         </ContactItem>
         <ContactItem>
-          <Phone style={{marginRight:"10px"}}/> +1 234 56 78
+          <Phone style={{ marginRight: "10px" }} /> +91 9780094701
         </ContactItem>
         <ContactItem>
-          <MailOutline style={{marginRight:"10px"}} /> contact@lama.dev
+          <MailOutline style={{ marginRight: "10px" }} />{" "}
+          sharmasuraj41@gmail.com
         </ContactItem>
         <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
       </Right>

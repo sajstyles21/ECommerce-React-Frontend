@@ -3,6 +3,9 @@ import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userRedux";
 
 const Container = styled.div`
   height: 60px;
@@ -67,6 +70,15 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
+  const quantity = useSelector((state) => state.cart.quantity);
+  const user = useSelector((state) => state.user.currentUser);
+
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -78,16 +90,49 @@ const Navbar = () => {
           </SearchContainer>
         </Left>
         <Center>
-          <Logo>LAMA.</Logo>
+          <Logo>
+            <Link style={{ textDecoration: "none", color: "black" }} to="/">
+              LABEL S
+            </Link>
+          </Logo>
         </Center>
         <Right>
-          <MenuItem>REGISTER</MenuItem>
-          <MenuItem>SIGN IN</MenuItem>
-          <MenuItem>
-            <Badge badgeContent={4} color="primary">
-              <ShoppingCartOutlined />
-            </Badge>
-          </MenuItem>
+          {!user && (
+            <MenuItem>
+              <Link style={{ textDecoration: "none" }} to="/register">
+                REGISTER
+              </Link>
+            </MenuItem>
+          )}
+          {!user && (
+            <MenuItem>
+              <Link style={{ textDecoration: "none" }} to="/login">
+                SIGN IN
+              </Link>
+            </MenuItem>
+          )}
+          {user && (
+            <MenuItem>
+              <Link
+                onClick={handleLogout}
+                to="/"
+                style={{ textDecoration: "none" }}
+              >
+                LOG OUT
+              </Link>
+            </MenuItem>
+          )}
+          <Link to="/cart">
+            <MenuItem>
+              <Badge
+                overlap="rectangular"
+                badgeContent={quantity}
+                color="primary"
+              >
+                <ShoppingCartOutlined />
+              </Badge>
+            </MenuItem>
+          </Link>
         </Right>
       </Wrapper>
     </Container>

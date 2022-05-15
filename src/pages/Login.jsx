@@ -1,6 +1,10 @@
+import { useState } from "react";
 import styled from "styled-components";
-import {mobile} from "../responsive";
-
+import { mobile } from "../responsive";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/apiCalls";
+import { useSelector } from "react-redux";
+import swal from "sweetalert";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -58,14 +62,43 @@ const Link = styled.a`
 `;
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+
+  const { error } = useSelector((state) => state.user);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login(dispatch, { username: username, password: password });
+  };
+
+  const sweetAlertPopUp = () => {
+    swal({
+      title: "",
+      text: "Something went wrong",
+      icon: "error",
+      dangerMode: true,
+    }).then((response) => {});
+  };
+
   return (
     <Container>
       <Wrapper>
         <Title>SIGN IN</Title>
-        <Form>
-          <Input placeholder="username" />
-          <Input placeholder="password" />
-          <Button>LOGIN</Button>
+        <Form onSubmit={handleSubmit}>
+          <Input
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="username"
+          />
+          <Input
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="password"
+          />
+          <Button type="submit">LOGIN</Button>
+          {error && "Something went wrong"}
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
           <Link>CREATE A NEW ACCOUNT</Link>
         </Form>

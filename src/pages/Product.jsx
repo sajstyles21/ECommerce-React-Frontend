@@ -1,17 +1,22 @@
 import { Add, Remove } from "@material-ui/icons";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import { mobile } from "../responsive";
+import { useState, useEffect } from "react";
+import { publicRequest, userRequest } from "../requestMethods";
+import { addProduct } from "../redux/cartRedux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Container = styled.div``;
 
 const Wrapper = styled.div`
   padding: 50px;
   display: flex;
-  ${mobile({ padding: "10px", flexDirection:"column" })}
+  ${mobile({ padding: "10px", flexDirection: "column" })}
 `;
 
 const ImgContainer = styled.div`
@@ -110,55 +115,111 @@ const Button = styled.button`
   cursor: pointer;
   font-weight: 500;
 
-  &:hover{
-      background-color: #f8f4f4;
+  &:hover {
+    background-color: #f8f4f4;
   }
 `;
 
 const Product = () => {
+  const location = useLocation();
+  const productId = location.pathname.split("/")[2];
+
+  const [product, setProduct] = useState({});
+  const [quantity, setQuantity] = useState(1);
+  const [isExist, setIsExist] = useState(false);
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
+  const { products } = cart;
+
+  useEffect(() => {
+    const index = products.findIndex((item) => item._id === productId);
+    if (index !== "" && index >= 0) {
+      setIsExist(true);
+    }
+  }, [products]);
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const res = await publicRequest.get(`/products/find/${productId}`);
+        setProduct(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getProduct();
+  }, [productId]);
+
+  const handleQuantity = (type) => {
+    if (type === "add") {
+      setQuantity(quantity + 1);
+    } else {
+      if (quantity > 1) {
+        setQuantity(quantity - 1);
+      } else {
+        setQuantity(1);
+      }
+    }
+  };
+
+  const handleColor = (value) => {
+    setColor(value);
+  };
+
+  const handleSize = (e) => {
+    setSize(e.target.value);
+  };
+
+  const addToCart = () => {
+    //Redux code
+    dispatch(addProduct({ ...product, quantity, size, color }));
+  };
+
   return (
     <Container>
       <Navbar />
       <Announcement />
       <Wrapper>
         <ImgContainer>
-          <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+          <Image src={product.img} />
         </ImgContainer>
         <InfoContainer>
-          <Title>Denim Jumpsuit</Title>
-          <Desc>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
-            iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget
-            tristique tortor pretium ut. Curabitur elit justo, consequat id
-            condimentum ac, volutpat ornare.
-          </Desc>
-          <Price>$ 20</Price>
+          <Title>{product.title}</Title>
+          <Desc>{product.desc}</Desc>
+          <Price>$ {product.price}</Price>
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              <FilterColor color="black" />
-              <FilterColor color="darkblue" />
-              <FilterColor color="gray" />
+              {product.color &&
+                product.color.map((item) => (
+                  <FilterColor
+                    onClick={() => handleColor(item)}
+                    key={item}
+                    color={item}
+                  />
+                ))}
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize>
-                <FilterSizeOption>XS</FilterSizeOption>
-                <FilterSizeOption>S</FilterSizeOption>
-                <FilterSizeOption>M</FilterSizeOption>
-                <FilterSizeOption>L</FilterSizeOption>
-                <FilterSizeOption>XL</FilterSizeOption>
+              <FilterSize onChange={handleSize}>
+                {product.size &&
+                  product.size.map((item) => (
+                    <FilterSizeOption key={item}>{item}</FilterSizeOption>
+                  ))}
               </FilterSize>
             </Filter>
           </FilterContainer>
           <AddContainer>
             <AmountContainer>
-              <Remove />
-              <Amount>1</Amount>
-              <Add />
+              <Remove onClick={() => handleQuantity("remove")} />
+              <Amount>{quantity}</Amount>
+              <Add onClick={() => handleQuantity("add")} />
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button disabled={isExist} onClick={addToCart}>
+              {isExist ? `ADDED TO CART` : `ADD TO CART`}
+            </Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>
