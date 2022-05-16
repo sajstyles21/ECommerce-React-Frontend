@@ -79,6 +79,9 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(emptyCart());
     dispatch(logout());
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   return (
