@@ -167,7 +167,6 @@ const Cart = () => {
   const user = useSelector((state) => state.user.currentUser);
   const key = "pk_test_2UfCJJ7VpMDQs86ycq7BTDs7";
   const [stripeToken, setStripeToken] = useState(null);
-  const [stripeResponse, setStripeResponse] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const navigate = useNavigate();
   if (cartDetails.products.length === 0) {
@@ -187,7 +186,7 @@ const Cart = () => {
           tokenId: stripeToken.id,
           amount: cartDetails?.total.toFixed() * 100,
         };
-        const stripeRequest = await userRequest.post("/payment", payload);
+        await userRequest.post("/payment", payload);
         let productDetails = [];
         cartDetails.products.map((item) =>
           productDetails.push({ productId: item._id, quantity: item.quantity })
@@ -204,7 +203,13 @@ const Cart = () => {
       } catch (err) {}
     };
     stripeToken && cartDetails?.total >= 1 && sendToken();
-  }, [stripeToken, cartDetails?.total, cartDetails.products]);
+  }, [
+    stripeToken,
+    cartDetails?.total,
+    cartDetails.products,
+    dispatch,
+    user?._id,
+  ]);
 
   const handleQuantity = (type, pid) => {
     if (type === "add") {

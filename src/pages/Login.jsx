@@ -4,7 +4,6 @@ import { mobile } from "../responsive";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/apiCalls";
 import { useSelector } from "react-redux";
-import swal from "sweetalert";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -77,15 +76,6 @@ const Login = () => {
     }, 100);
   };
 
-  const sweetAlertPopUp = () => {
-    swal({
-      title: "",
-      text: "Something went wrong",
-      icon: "error",
-      dangerMode: true,
-    }).then((response) => {});
-  };
-
   return (
     <Container>
       <Wrapper>
@@ -97,6 +87,7 @@ const Login = () => {
           />
           <Input
             type="password"
+            autocomplete="off"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
           />

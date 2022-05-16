@@ -96,7 +96,7 @@ const Register = () => {
         navigate("/login");
       }, 3000);
     }
-  }, [accountCreated, success]);
+  }, [accountCreated, success,navigate]);
 
   console.log(errorMessage);
   return (

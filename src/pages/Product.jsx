@@ -7,7 +7,7 @@ import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import { mobile } from "../responsive";
 import { useState, useEffect } from "react";
-import { publicRequest, userRequest } from "../requestMethods";
+import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -138,7 +138,7 @@ const Product = () => {
     if (index !== "" && index >= 0) {
       setIsExist(true);
     }
-  }, [products]);
+  }, [products,productId]);
 
   useEffect(() => {
     const getProduct = async () => {
