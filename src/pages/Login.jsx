@@ -72,6 +72,9 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     login(dispatch, { username: username, password: password });
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   const sweetAlertPopUp = () => {

@@ -206,14 +206,6 @@ const Cart = () => {
     stripeToken && cartDetails?.total >= 1 && sendToken();
   }, [stripeToken, cartDetails?.total, cartDetails.products]);
 
-  useEffect(() => {
-    //Redux hit
-    //createOrder(dispatch, payload);
-    //setOrderCreated(true);
-    //setStripeResponse(null);
-    //dispatch(emptyCart({}));
-  }, []);
-
   const handleQuantity = (type, pid) => {
     if (type === "add") {
       const product = cartDetails.products.find((item) => item._id === pid);
@@ -301,7 +293,7 @@ const Cart = () => {
                     />
                   </ProductAmountContainer>
                   <ProductPrice>
-                    $ {product?.price * product?.quantity}
+                    $ {Math.floor(product?.price * product?.quantity)}
                   </ProductPrice>
                 </PriceDetail>
               </Product>
@@ -313,7 +305,7 @@ const Cart = () => {
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
               <SummaryItemPrice>
-                $ {cartDetails?.total.toFixed()}
+                $ {Math.floor(cartDetails?.total)}
               </SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
@@ -327,7 +319,7 @@ const Cart = () => {
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>
-                $ {cartDetails?.total.toFixed()}
+                $ {Math.floor(cartDetails?.total)}
               </SummaryItemPrice>
             </SummaryItem>
             {user ? (
