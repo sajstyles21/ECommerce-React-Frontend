@@ -73,9 +73,7 @@ const Login = () => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
     login(dispatch, { username: username, password: password });
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+  
   };
 
   return (
