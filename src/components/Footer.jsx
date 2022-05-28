@@ -100,7 +100,7 @@ const Footer = () => {
   return (
     <Container>
       <Left>
-        <Logo>LABEL S.</Logo>
+        <Logo>LABEL A</Logo>
         <Desc>
           There are many variations of passages of Lorem Ipsum available, but
           the majority have suffered alteration in some form, by injected
