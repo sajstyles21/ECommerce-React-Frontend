@@ -70,10 +70,10 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    e.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
     login(dispatch, { username: username, password: password });
-  
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   return (

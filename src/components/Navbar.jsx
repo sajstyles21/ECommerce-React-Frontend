@@ -97,7 +97,7 @@ const Navbar = () => {
         <Center>
           <Logo>
             <Link style={{ textDecoration: "none", color: "black" }} to="/">
-              LABEL S
+              LABEL A
             </Link>
           </Logo>
         </Center>

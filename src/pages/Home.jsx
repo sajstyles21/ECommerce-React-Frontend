@@ -14,9 +14,9 @@ const Home = () => {
       <Navbar />
       <Slider />
       <Categories />
-      <Products/>
-      <Newsletter/>
-      <Footer/>
+      <Products />
+      <Newsletter />
+      <Footer />
     </div>
   );
 };
