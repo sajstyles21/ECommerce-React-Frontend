@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/apiCalls";
 import { useSelector } from "react-redux";
+import { clear } from "../redux/userRedux";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -66,14 +67,15 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
-  const { error } = useSelector((state) => state.user);
+  const { errorMessage } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    dispatch(clear());
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     login(dispatch, { username: username, password: password });
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
   };
 
   return (
@@ -92,7 +94,7 @@ const Login = () => {
             placeholder="password"
           />
           <Button type="submit">LOGIN</Button>
-          {error && "Something went wrong"}
+          {errorMessage && errorMessage.errors.user}
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
           <Link>CREATE A NEW ACCOUNT</Link>
         </Form>

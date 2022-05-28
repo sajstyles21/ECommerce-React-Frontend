@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { emptyCart, updateCart } from "../redux/cartRedux";
 import { createOrder } from "../redux/apiCalls";
+import axios from "axios";
+import { baseUrl } from "../requestMethods";
 
 const Container = styled.div``;
 
@@ -179,14 +181,22 @@ const Cart = () => {
     setStripeToken(token);
   };
 
+  const TOKEN =
+    localStorage.getItem("persist:root") &&
+    JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
+      ?.currentUser?.accessToken;
+
   useEffect(() => {
     const sendToken = async () => {
       try {
+        const config = {
+          headers: { token: `Bearer ${TOKEN}` },
+        };
         const payload = {
           tokenId: stripeToken.id,
           amount: cartDetails?.total.toFixed() * 100,
         };
-        await userRequest.post("/payment", payload);
+        await axios.post(baseUrl + "payment", payload, config);
         let productDetails = [];
         cartDetails.products.map((item) =>
           productDetails.push({ productId: item._id, quantity: item.quantity })
