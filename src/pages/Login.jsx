@@ -71,7 +71,7 @@ const Login = () => {
 
   useEffect(() => {
     dispatch(clear());
-  }, []);
+  }, [dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

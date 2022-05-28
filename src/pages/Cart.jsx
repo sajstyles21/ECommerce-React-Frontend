@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
-import { userRequest } from "../requestMethods";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
