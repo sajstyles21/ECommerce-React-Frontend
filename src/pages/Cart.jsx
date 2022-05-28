@@ -218,6 +218,7 @@ const Cart = () => {
     cartDetails.products,
     dispatch,
     user?._id,
+    TOKEN,
   ]);
 
   const handleQuantity = (type, pid) => {
