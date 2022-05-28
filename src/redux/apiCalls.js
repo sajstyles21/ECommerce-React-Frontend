@@ -6,6 +6,8 @@ import {
   registerStart,
   registerSuccess,
 } from "./registerRedux";
+import { baseUrl } from "../requestMethods";
+import axios from "axios";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -30,7 +32,16 @@ export const register = async (dispatch, user) => {
 export const createOrder = async (dispatch, order) => {
   dispatch(orderStart());
   try {
-    const res = await userRequest.post("orders", order);
+    const TOKEN =
+      localStorage.getItem("persist:root") &&
+      JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
+        ?.currentUser?.accessToken;
+
+    const config = {
+      headers: { token: `Bearer ${TOKEN}` },
+    };
+
+    const res = await axios.post(baseUrl + "orders", order, config);
     dispatch(orderSuccess(res.data));
   } catch (err) {
     dispatch(orderFailure(err.response.data));
