@@ -1,4 +1,4 @@
-import { publicRequest, userRequest } from "../requestMethods";
+import { publicRequest } from "../requestMethods";
 import { orderFailure, orderStart, orderSuccess } from "./orderRedux";
 import { loginFailure, loginStart, loginSuccess } from "./userRedux";
 import {
