@@ -4,6 +4,7 @@ import App from "./App";
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import setUpInterceptors from "./setUpInterceptors";
 
 ReactDOM.render(
   <Provider store={store}>
@@ -13,3 +14,5 @@ ReactDOM.render(
   </Provider>,
   document.getElementById("root")
 );
+
+setUpInterceptors(store);

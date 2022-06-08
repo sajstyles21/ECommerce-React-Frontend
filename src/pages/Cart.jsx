@@ -5,7 +5,6 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
 import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +12,11 @@ import { useDispatch } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { emptyCart, updateCart } from "../redux/cartRedux";
 import { createOrder } from "../redux/apiCalls";
-import axios from "axios";
-import { baseUrl } from "../requestMethods";
+import { userRequest } from "../requestMethods";
+import jwt_decode from "jwt-decode";
+import { logout } from "../redux/userRedux";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div``;
 
@@ -170,20 +172,30 @@ const Cart = () => {
   const [stripeToken, setStripeToken] = useState(null);
   const [orderCreated, setOrderCreated] = useState(false);
   const navigate = useNavigate();
-  if (cartDetails.products.length === 0) {
-    <Navigate to="/" />;
-  }
 
   const dispatch = useDispatch();
+  
+  const notify = () => {
+    toast("Token has expired. Please login again!")
+  }
 
   const onToken = (token) => {
-    setStripeToken(token);
+    let userDetail = JSON.parse(localStorage.getItem("user"));
+    const accessToken = userDetail?.accessToken;
+    let currentDate = new Date();
+    const decodedToken = jwt_decode(accessToken);
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      dispatch(logout({}));
+      localStorage.clear();
+      navigate('/login');
+      notify();
+    }else{
+      setStripeToken(token);
+    }
   };
 
-  const TOKEN =
-    localStorage.getItem("persist:root") &&
-    JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
-      ?.currentUser?.accessToken;
+  let userDetail = JSON.parse(localStorage.getItem("user"));
+  const TOKEN = userDetail?.accessToken;
 
   useEffect(() => {
     const sendToken = async () => {
@@ -195,7 +207,7 @@ const Cart = () => {
           tokenId: stripeToken.id,
           amount: cartDetails?.total.toFixed() * 100,
         };
-        await axios.post(baseUrl + "payment", payload, config);
+        await userRequest.post("payment", payload, config);
         let productDetails = [];
         cartDetails.products.map((item) =>
           productDetails.push({ productId: item._id, quantity: item.quantity })
@@ -339,7 +351,7 @@ const Cart = () => {
             </SummaryItem>
             {user ? (
               <StripeCheckout
-                name="LABEL S"
+                name="LABEL A"
                 description={`Your cart total is ${~~cartDetails?.total}`}
                 amount={cartDetails?.total.toFixed() * 100}
                 token={onToken}

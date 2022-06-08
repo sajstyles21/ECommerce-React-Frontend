@@ -1,4 +1,4 @@
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import { orderFailure, orderStart, orderSuccess } from "./orderRedux";
 import { loginFailure, loginStart, loginSuccess } from "./userRedux";
 import {
@@ -6,14 +6,13 @@ import {
   registerStart,
   registerSuccess,
 } from "./registerRedux";
-import { baseUrl } from "../requestMethods";
-import axios from "axios";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
   try {
     const res = await publicRequest.post("auth/login", user);
     dispatch(loginSuccess(res.data));
+    localStorage.setItem("user", JSON.stringify(res.data));
   } catch (err) {
     dispatch(loginFailure(err.response.data));
   }
@@ -32,16 +31,14 @@ export const register = async (dispatch, user) => {
 export const createOrder = async (dispatch, order) => {
   dispatch(orderStart());
   try {
-    const TOKEN =
-      localStorage.getItem("persist:root") &&
-      JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user)
-        ?.currentUser?.accessToken;
+    let user = JSON.parse(localStorage.getItem("user"));
+    const TOKEN = user?.accessToken;
 
     const config = {
       headers: { token: `Bearer ${TOKEN}` },
     };
 
-    const res = await axios.post(baseUrl + "orders", order, config);
+    const res = await userRequest.post("orders", order, config);
     dispatch(orderSuccess(res.data));
   } catch (err) {
     dispatch(orderFailure(err.response.data));
