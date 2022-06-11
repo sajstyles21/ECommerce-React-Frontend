@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { emptyCart, updateCart } from "../redux/cartRedux";
 import { createOrder } from "../redux/apiCalls";
-import { userRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import jwt_decode from "jwt-decode";
 import { logout } from "../redux/userRedux";
 import { toast } from 'react-toastify';
@@ -179,16 +179,28 @@ const Cart = () => {
     toast("Token has expired. Please login again!")
   }
 
-  const onToken = (token) => {
+  const onToken = async (token) => {
     let userDetail = JSON.parse(localStorage.getItem("user"));
     const accessToken = userDetail?.accessToken;
     let currentDate = new Date();
     const decodedToken = jwt_decode(accessToken);
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      dispatch(logout({}));
-      localStorage.clear();
-      navigate('/login');
-      notify();
+      const refToken = userDetail?.refreshToken;
+        try {
+          const res = await publicRequest.post("auth/refresh", {
+            token: refToken,
+          });
+          const { accessToken, refreshToken } = res.data;
+          const newUser = {
+            ...userDetail,
+            accessToken,
+            refreshToken,
+          };
+          localStorage.setItem("user", JSON.stringify(newUser));
+          setStripeToken(token);
+        } catch (err) {
+          console.log(err);
+        }
     }else{
       setStripeToken(token);
     }

@@ -1,4 +1,4 @@
-import { userRequest } from "./requestMethods";
+import { publicRequest, userRequest } from "./requestMethods";
 import jwt_decode from "jwt-decode";
 import { logout } from "./redux/userRedux";
 
@@ -13,8 +13,22 @@ const setUpInterceptors = (store) => {
       let currentDate = new Date();
       const decodedToken = jwt_decode(accessToken);
       if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        dispatch(logout({}));
-        localStorage.clear();
+        const refToken = userDetail?.refreshToken;
+        try {
+          const res = await publicRequest.post("auth/refresh", {
+            token: refToken,
+          });
+          const { accessToken, refreshToken } = res.data;
+          const newUser = {
+            ...userDetail,
+            accessToken,
+            refreshToken,
+          };
+          localStorage.setItem("user", JSON.stringify(newUser));
+          config.headers["token"] = "Bearer " + accessToken;
+        } catch (err) {
+          console.log(err);
+        }
       }
       return config;
     },
