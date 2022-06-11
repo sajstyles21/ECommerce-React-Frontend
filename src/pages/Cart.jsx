@@ -14,7 +14,6 @@ import { emptyCart, updateCart } from "../redux/cartRedux";
 import { createOrder } from "../redux/apiCalls";
 import { publicRequest, userRequest } from "../requestMethods";
 import jwt_decode from "jwt-decode";
-import { logout } from "../redux/userRedux";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -174,10 +173,6 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  
-  const notify = () => {
-    toast("Token has expired. Please login again!")
-  }
 
   const onToken = async (token) => {
     let userDetail = JSON.parse(localStorage.getItem("user"));
