@@ -156,7 +156,7 @@ const Footer = () => {
           <MailOutline style={{ marginRight: "10px" }} />{" "}
           sharmasuraj41@gmail.com
         </ContactItem>
-        <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
+        <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" loading="lazy" />
       </Right>
     </Container>
   );

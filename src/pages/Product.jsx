@@ -183,7 +183,7 @@ const Product = () => {
       <Announcement />
       <Wrapper>
         <ImgContainer>
-          <Image src={product.img} />
+          <Image src={product.img} loading="lazy" />
         </ImgContainer>
         <InfoContainer>
           <Title>{product.title}</Title>

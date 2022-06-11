@@ -1,8 +1,6 @@
+import React, { Suspense } from "react";
 import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
-import Announcement from "../components/Announcement";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import { useSelector } from "react-redux";
 import StripeCheckout from "react-stripe-checkout";
@@ -14,7 +12,13 @@ import { emptyCart, updateCart } from "../redux/cartRedux";
 import { createOrder } from "../redux/apiCalls";
 import { publicRequest, userRequest } from "../requestMethods";
 import jwt_decode from "jwt-decode";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "./ErrorBoundary";
+
+const Announcement = React.lazy(() => import("../components/Announcement"));
+const Footer = React.lazy(() => import("../components/Footer"));
+const Navbar = React.lazy(() => import("../components/Navbar"));
 
 const Container = styled.div``;
 
@@ -180,22 +184,22 @@ const Cart = () => {
     const decodedToken = jwt_decode(accessToken);
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
       const refToken = userDetail?.refreshToken;
-        try {
-          const res = await publicRequest.post("auth/refresh", {
-            token: refToken,
-          });
-          const { accessToken, refreshToken } = res.data;
-          const newUser = {
-            ...userDetail,
-            accessToken,
-            refreshToken,
-          };
-          localStorage.setItem("user", JSON.stringify(newUser));
-          setStripeToken(token);
-        } catch (err) {
-          console.log(err);
-        }
-    }else{
+      try {
+        const res = await publicRequest.post("auth/refresh", {
+          token: refToken,
+        });
+        const { accessToken, refreshToken } = res.data;
+        const newUser = {
+          ...userDetail,
+          accessToken,
+          refreshToken,
+        };
+        localStorage.setItem("user", JSON.stringify(newUser));
+        setStripeToken(token);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
       setStripeToken(token);
     }
   };
@@ -274,18 +278,23 @@ const Cart = () => {
 
   return (
     <Container>
-      <Navbar />
-      {orderCreated ? (
-        <SweetAlert
-          title={"Order Created Successfully"}
-          onConfirm={() => handleAlert("confirm")}
-          onCancel={() => handleAlert("cancel")}
-          dependencies={[orderCreated]}
-        ></SweetAlert>
-      ) : (
-        ""
-      )}
-      <Announcement />
+      <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {}}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Navbar />
+          {orderCreated ? (
+            <SweetAlert
+              title={"Order Created Successfully"}
+              onConfirm={() => handleAlert("confirm")}
+              onCancel={() => handleAlert("cancel")}
+              dependencies={[orderCreated]}
+            ></SweetAlert>
+          ) : (
+            ""
+          )}
+          <Announcement />
+        </Suspense>
+      </ErrorBoundary>
+
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
@@ -303,7 +312,7 @@ const Cart = () => {
             {cartDetails.products.map((product) => (
               <Product key={product._id}>
                 <ProductDetail>
-                  <Image src={product?.img} />
+                  <Image src={product?.img} loading="lazy" />
                   <Details>
                     <ProductName>
                       <b>Product:</b> {product?.title}
@@ -379,7 +388,11 @@ const Cart = () => {
           </Summary>
         </Bottom>
       </Wrapper>
-      <Footer />
+      <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {}}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Footer />
+        </Suspense>
+      </ErrorBoundary>
     </Container>
   );
 };

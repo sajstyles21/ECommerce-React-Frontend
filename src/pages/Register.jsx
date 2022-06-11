@@ -126,6 +126,7 @@ const Register = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
+            autocomplete="current-password"
             required
           />
           <Input

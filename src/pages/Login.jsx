@@ -86,10 +86,11 @@ const Login = () => {
           <Input
             onChange={(e) => setUsername(e.target.value)}
             placeholder="username"
+            autocomplete="username"
           />
           <Input
             type="password"
-            autocomplete="off"
+            autocomplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
           />

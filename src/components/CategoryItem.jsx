@@ -46,7 +46,7 @@ const CategoryItem = ({ item }) => {
   return (
     <Container>
       <Link to={`/products/${item.name}`}>
-        <Image src={item.img} />
+        <Image src={item.img} loading="lazy" />
         <Info>
           <Title>{item.title}</Title>
           <Button>SHOP NOW</Button>
