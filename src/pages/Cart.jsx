@@ -279,7 +279,7 @@ const Cart = () => {
   return (
     <Container>
       <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {}}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div></div>}>
           <Navbar />
           {orderCreated ? (
             <SweetAlert
@@ -389,7 +389,7 @@ const Cart = () => {
         </Bottom>
       </Wrapper>
       <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {}}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div></div>}>
           <Footer />
         </Suspense>
       </ErrorBoundary>

@@ -19,7 +19,7 @@ const Home = () => {
           window.location.reload();
         }}
       >
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div></div>}>
           <Announcement />
         </Suspense>
       </ErrorBoundary>
@@ -40,9 +40,7 @@ const Home = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
-            >
-              Loading...
-            </div>
+            ></div>
           }
         >
           <Products />

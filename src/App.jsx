@@ -30,9 +30,7 @@ const App = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
-            >
-              Loading...
-            </div>
+            ></div>
           }
         >
           <Routes>
