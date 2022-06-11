@@ -14,7 +14,6 @@ import { emptyCart, updateCart } from "../redux/cartRedux";
 import { createOrder } from "../redux/apiCalls";
 import { publicRequest, userRequest } from "../requestMethods";
 import jwt_decode from "jwt-decode";
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div``;
